@@ -10,7 +10,7 @@ pipeline {
         cron('H/5 * * * *')
     }
     stages {
-        stage('Master branch version') {
+        stage('Master version') {
             when {
                 branch 'master'
             }
@@ -21,7 +21,7 @@ pipeline {
                 echo "Master branch, next version is: ${version}"
             }
         }
-        stage('*-build branch version') {
+        stage('Branch version') {
             when {
                 branch '*-build'
             }
@@ -34,7 +34,7 @@ pipeline {
         }
         stage('run unit test') {
             steps {
-                sh './gradlew test'
+                sh "./gradlew test"
             }
         }
         stage('Publish the artifact') {
@@ -42,7 +42,7 @@ pipeline {
                 anyOf { branch 'master'; branch '*-build' }
             }
             steps {
-                sh './gradlew publish'
+                sh "./gradlew publish"
                 sh "git tag ${version}"
                 sh "git push --tags"
             }
