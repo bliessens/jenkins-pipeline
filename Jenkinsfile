@@ -1,15 +1,21 @@
 pipeline {
-  agent {
-    node {
-      label 'master'
-    }
+    agent {
+        node {
+            label 'master'
+        }
 
-  }
-  stages {
-    stage('stage1') {
-      steps {
-        sh './gradlew build'
-      }
     }
-  }
+    stages {
+        stage('test') {
+            steps {
+                sh './gradlew test'
+            }
+        }
+        stage('build') {
+            when
+            steps {
+                sh './gradlew build'
+            }
+        }
+    }
 }
