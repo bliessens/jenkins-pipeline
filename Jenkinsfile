@@ -1,3 +1,4 @@
+def version = ""
 pipeline {
     agent {
         node {
@@ -6,6 +7,15 @@ pipeline {
 
     }
     stages {
+        stage('Determine version number') {
+            when {
+                branch 'master'
+            }
+            steps {
+                version = sh("git rev-list --count master").trim()
+                echo "Master branch, next version is: ${version}"
+            }
+        }
         stage('run unit test') {
             steps {
                 sh './gradlew test'
@@ -17,6 +27,8 @@ pipeline {
             }
             steps {
                 sh './gradlew publish'
+                sh "git tag ${version}"
+                sh "git push --tags"
             }
         }
     }
