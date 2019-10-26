@@ -6,12 +6,12 @@ pipeline {
 
     }
     stages {
-        stage('test') {
+        stage('run unit test') {
             steps {
                 sh './gradlew test'
             }
         }
-        stage('build') {
+        stage('Build the artifact') {
             steps {
                 sh './gradlew build'
             }
