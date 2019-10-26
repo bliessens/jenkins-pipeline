@@ -12,7 +12,9 @@ pipeline {
                 branch 'master'
             }
             steps {
-                version = sh(script: "git rev-list --count master", returnStdout: true).trim()
+                script {
+                    version = sh(script: "git rev-list --count master", returnStdout: true).trim()
+                }
                 echo "Master branch, next version is: ${version}"
             }
         }
