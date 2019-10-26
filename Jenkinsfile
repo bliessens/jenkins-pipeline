@@ -11,10 +11,12 @@ pipeline {
                 sh './gradlew test'
             }
         }
-
-        stage('Build the artifact') {
+        stage('Publish the artifact') {
+            when {
+                branch 'master'
+            }
             steps {
-                sh './gradlew build'
+                sh './gradlew publish'
             }
         }
     }
