@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('run unit test') {
             steps {
-                sh './gradlew check'
+                sh './gradlew test'
             }
         }
 
@@ -20,7 +20,7 @@ pipeline {
     }
     post {
         always {
-            junit 'build/reports/**/*.xml'
+            junit 'build/test-results/**/*.xml'
         }
     }
 }
