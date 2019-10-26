@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('run unit test') {
             steps {
-                sh './gradlew test'
+                sh './gradlew check'
             }
             post {
                 always {
