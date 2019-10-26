@@ -10,12 +10,13 @@ pipeline {
             steps {
                 sh './gradlew test'
             }
-        }
-        post {
-            always {
-                junit '**/build/reports/**/*.xml'
+            post {
+                always {
+                    junit '**/build/reports/**/*.xml'
+                }
             }
         }
+
         stage('Build the artifact') {
             steps {
                 sh './gradlew build'
