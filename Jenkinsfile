@@ -10,6 +10,7 @@ pipeline {
         stage('Determine version number') {
             when {
                 branch 'master'
+                branch '*-build'
             }
             steps {
                 script {
