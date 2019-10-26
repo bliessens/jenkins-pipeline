@@ -12,7 +12,6 @@ pipeline {
             }
         }
         stage('build') {
-            when
             steps {
                 sh './gradlew build'
             }
