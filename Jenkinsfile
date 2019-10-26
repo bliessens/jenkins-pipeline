@@ -27,7 +27,7 @@ pipeline {
             }
             steps {
                 script {
-                    version = env.BRANCH_NAME + "." sh(script: "git rev-list --count HEAD", returnStdout: true).trim()
+                    version = env.BRANCH_NAME + "." + sh(script: "git rev-list --count HEAD", returnStdout: true).trim()
                 }
                 echo "Branch version is: ${version}"
             }
