@@ -1,5 +1,4 @@
-
-def call() {
+def call(boolean sonarqube = false) {
     def version = ""
     pipeline {
         agent {
@@ -34,9 +33,17 @@ def call() {
                     echo "Branch version is: ${version}"
                 }
             }
-            stage('run unit test') {
+            stage('Build') {
                 steps {
-                    sh "./gradlew test"
+                    sh "./gradlew build"
+                }
+            }
+            stage('Sonar') {
+                when {
+                    expression { return sonarqube }
+                }
+                steps {
+                    echo "Running sonarqube analysis"
                 }
             }
             stage('Publish the artifact') {
@@ -52,7 +59,7 @@ def call() {
         }
         post {
             always {
-                junit 'build/test-results/**/*.xml'
+                junit '**/build/test-results/**/*.xml'
             }
         }
     }
