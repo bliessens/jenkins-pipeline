@@ -4,18 +4,16 @@ def call(Map attr = ['sonarqube': false]) {
         agent {
             node {
                 label 'master'
-                reuseNode = true
             }
-
         }
         triggers {
             cron('H/5 * * * *')
         }
         stages {
             stage('Determine version') {
-                when {
-                    anyOf { branch 'master'; branch '*-fix'; branch '*-build' }
-                }
+//                when {
+//                    anyOf { branch 'master'; branch '*-fix'; branch '*-build' }
+//                }
                 if (env.BRANCH_NAME == 'master') {
                     steps {
                         script {
@@ -60,6 +58,11 @@ def call(Map attr = ['sonarqube': false]) {
 //                }
 //            }
             stage('Build') {
+                agent {
+                    node {
+                        reuseNode = true
+                    }
+                }
                 steps {
                     sh "./gradlew build"
                 }
