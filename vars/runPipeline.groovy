@@ -60,11 +60,11 @@ def call(Map attr = ['sonarqube': false]) {
 //                }
 //            }
             stage('Build') {
-                agent {
-                    node {
-                        reuseNode true
-                    }
-                }
+//                agent {
+//                    node {
+//                        reuseNode true
+//                    }
+//                }
                 steps {
                     sh "./gradlew build"
                 }
