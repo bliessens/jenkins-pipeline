@@ -1,10 +1,10 @@
-def call(Map attr = ['sonarqube': false]) {
+def call(Map options = ['sonarqube': false, 'label': 'master']) {
 
     def version = ""
     pipeline {
         agent {
             node {
-                label 'master'
+                label options['label']
             }
         }
         triggers {
@@ -68,11 +68,11 @@ def call(Map attr = ['sonarqube': false]) {
 //                    sh "docker push ${dockerImage}:${version}"
                 }
             }
-            stage ('Finalize') {
+            stage('Finalize') {
                 parallel {
                     stage('Sonar') {
                         when {
-                            expression { return attr['sonarqube'] }
+                            expression { return options['sonarqube'] }
                         }
                         steps {
                             sh "./gradlew sonarqube"
@@ -80,7 +80,7 @@ def call(Map attr = ['sonarqube': false]) {
                     }
                     stage('Publish docker container artifact') {
                         when {
-                            anyOf { branch 'master'; branch '*-build' ; branch '*-fix' }
+                            anyOf { branch 'master'; branch '*-build'; branch '*-fix' }
                         }
                         steps {
                             echo "Invoke docker push command"
