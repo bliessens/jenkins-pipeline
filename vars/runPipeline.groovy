@@ -1,7 +1,5 @@
 def call(Map attr = ['sonarqube': false]) {
 
-    properties([disableConcurrentBuilds()])
-
     def version = ""
     pipeline {
         agent {
@@ -11,6 +9,10 @@ def call(Map attr = ['sonarqube': false]) {
         }
         triggers {
             pollSCM('H/5 * * * *')
+        }
+        options {
+            disableConcurrentBuilds()
+            buildDiscarder(logRotator(numToKeepStr: '10'))
         }
         stages {
             stage('Determine version') {
