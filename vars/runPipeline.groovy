@@ -61,10 +61,11 @@ def call(Map attr = ['sonarqube': false]) {
             }
             stage('Dockerize') {
                 steps {
-                    sh "./gradlew application:buildDocker --stacktrace --info -PversionToBuild=${versionToBuild}"
-                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${versionToBuild}"
-                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
-                    sh "docker push ${dockerImage}:${versionToBuild}"
+                    echo "Disabled for now"
+//                    sh "./gradlew application:buildDocker --stacktrace --info -PversionToBuild=${version}"
+//                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${version}"
+//                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
+//                    sh "docker push ${dockerImage}:${version}"
                 }
             }
             stage ('Finalize') {
