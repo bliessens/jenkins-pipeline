@@ -17,7 +17,7 @@ def call(Map attr = ['sonarqube': false]) {
                 }
                 steps {
                     script {
-                        version = sh(script: "git -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim() + 1
+                        version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim() + 1
                     }
                     echo "Master branch, next version is: ${version}"
                 }
@@ -30,7 +30,7 @@ def call(Map attr = ['sonarqube': false]) {
                     script {
                         version = env.BRANCH_NAME + "." + sh(script: "git rev-list --count HEAD", returnStdout: true).trim()
                     }
-                    echo "Branch version is: ${version}"
+                    echo "Branch is ${env.BRANCH_NAME}, next version is: ${version}"
                 }
             }
             stage('Build') {
@@ -43,7 +43,7 @@ def call(Map attr = ['sonarqube': false]) {
                     expression { return attr['sonarqube'] }
                 }
                 steps {
-                    echo "Running sonarqube analysis"
+                    sh "./gradlew sonarqube"
                 }
             }
             stage('Publish the artifact') {
@@ -60,14 +60,6 @@ def call(Map attr = ['sonarqube': false]) {
         post {
             always {
                 junit '**/build/test-results/**/*.xml'
-                publishHTML(target: [
-                        allowMissing         : false,
-                        alwaysLinkToLastBuild: false,
-                        keepAll              : true,
-                        reportDir            : 'build/reports/jacoco/',
-                        reportFiles          : 'index.html',
-                        reportName           : "Coverage Report"
-                ])
             }
         }
     }
