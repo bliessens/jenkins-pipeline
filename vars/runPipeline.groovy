@@ -4,7 +4,6 @@ def call(Map attr = ['sonarqube': false]) {
         agent {
             node {
                 label 'master'
-//                reuseNode true
             }
         }
         triggers {
@@ -48,23 +47,7 @@ def call(Map attr = ['sonarqube': false]) {
                     }
                 }
             }
-//            stage('Branch version') {
-//                when {
-//                    branch '*-build'
-//                }
-//                steps {
-//                    script {
-//                        version = env.BRANCH_NAME + "." + sh(script: "git rev-list --count HEAD", returnStdout: true).trim()
-//                    }
-//                    echo "Branch is ${env.BRANCH_NAME}, next version is: ${version}"
-//                }
-//            }
             stage('Build') {
-//                agent {
-//                    node {
-//                        reuseNode true
-//                    }
-//                }
                 steps {
                     sh "./gradlew clean build"
                     sh "git tag ${version}"
