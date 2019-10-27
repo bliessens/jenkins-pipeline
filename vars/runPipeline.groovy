@@ -1,5 +1,5 @@
 
-def executePipeline() {
+def call() {
     def version = ""
     pipeline {
         agent {
