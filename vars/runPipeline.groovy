@@ -17,7 +17,7 @@ def call(Map attr = ['sonarqube': false]) {
                 }
                 steps {
                     script {
-                        version = sh(script: "git rev-list --count master", returnStdout: true).trim()
+                        version = sh(script: "git -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim() + 1
                     }
                     echo "Master branch, next version is: ${version}"
                 }
@@ -60,13 +60,13 @@ def call(Map attr = ['sonarqube': false]) {
         post {
             always {
                 junit '**/build/test-results/**/*.xml'
-                publishHTML (target: [
-                        allowMissing: false,
+                publishHTML(target: [
+                        allowMissing         : false,
                         alwaysLinkToLastBuild: false,
-                        keepAll: true,
-                        reportDir: '**/build/reports/jacoco/',
-                        reportFiles: 'index.html',
-                        reportName: "Coverage Report"
+                        keepAll              : true,
+                        reportDir            : 'build/reports/jacoco/',
+                        reportFiles          : 'index.html',
+                        reportName           : "Coverage Report"
                 ])
             }
         }
