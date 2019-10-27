@@ -7,12 +7,12 @@ def call(Map options = ['sonarqube': false, 'label': 'master']) {
                 label options['label']
             }
         }
-        triggers {
-            pollSCM('H/5 * * * *')
-        }
         options {
             disableConcurrentBuilds()
             buildDiscarder(logRotator(numToKeepStr: '10'))
+        }
+        triggers {
+            pollSCM('H/5 * * * *')
         }
         stages {
             stage('Determine version') {
