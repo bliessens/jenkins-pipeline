@@ -66,25 +66,29 @@ def call(Map attr = ['sonarqube': false]) {
 //                    }
 //                }
                 steps {
-                    sh "./gradlew build"
-                }
-            }
-            stage('Sonar') {
-                when {
-                    expression { return attr['sonarqube'] }
-                }
-                steps {
-                    sh "./gradlew sonarqube"
-                }
-            }
-            stage('Publish the artifact') {
-                when {
-                    anyOf { branch 'master'; branch '*-build' }
-                }
-                steps {
-                    sh "./gradlew publish"
+                    sh "./gradlew clean build"
                     sh "git tag ${version}"
                     sh "git push --tags"
+                }
+            }
+            stage ('Finalize') {
+                parallel {
+                    stage('Sonar') {
+                        when {
+                            expression { return attr['sonarqube'] }
+                        }
+                        steps {
+                            sh "./gradlew sonarqube"
+                        }
+                    }
+                    stage('Publish the artifact') {
+                        when {
+                            anyOf { branch 'master'; branch '*-build' ; branch '*-fix' }
+                        }
+                        steps {
+                            sh "./gradlew publish"
+                        }
+                    }
                 }
             }
         }
