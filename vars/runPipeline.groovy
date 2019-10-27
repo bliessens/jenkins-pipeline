@@ -69,6 +69,7 @@ def call(Map attr = ['sonarqube': false]) {
                     sh "./gradlew clean build"
                     sh "git tag ${version}"
                     sh "git push --tags"
+                    echo "Tag docker container accordingly"
                 }
             }
             stage ('Finalize') {
@@ -81,12 +82,12 @@ def call(Map attr = ['sonarqube': false]) {
                             sh "./gradlew sonarqube"
                         }
                     }
-                    stage('Publish the artifact') {
+                    stage('Publish docker container artifact') {
                         when {
                             anyOf { branch 'master'; branch '*-build' ; branch '*-fix' }
                         }
                         steps {
-                            sh "./gradlew publish"
+                            echo "Invoke docker push command"
                         }
                     }
                 }
