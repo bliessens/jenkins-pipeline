@@ -4,6 +4,7 @@ def call(Map attr = ['sonarqube': false]) {
         agent {
             node {
                 label 'master'
+                reuseNode true
             }
         }
         triggers {
@@ -59,11 +60,11 @@ def call(Map attr = ['sonarqube': false]) {
 //                }
 //            }
             stage('Build') {
-                agent {
-                    node {
-                        reuseNode = true
-                    }
-                }
+//                agent {
+//                    node {
+//                        reuseNode  true
+//                    }
+//                }
                 steps {
                     sh "./gradlew build"
                 }
