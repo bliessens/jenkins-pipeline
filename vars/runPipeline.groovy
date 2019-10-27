@@ -17,7 +17,8 @@ def call(Map attr = ['sonarqube': false]) {
                 }
                 steps {
                     script {
-                        version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim() + 1
+                        version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim()
+                        version = (Integer.parseInt(version) + 1).toString()
                     }
                     echo "Master branch, next version is: ${version}"
                 }
