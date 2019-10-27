@@ -60,6 +60,14 @@ def call(Map attr = ['sonarqube': false]) {
         post {
             always {
                 junit '**/build/test-results/**/*.xml'
+                publishHTML (target: [
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: false,
+                        keepAll: true,
+                        reportDir: '**/build/reports/jacoco/',
+                        reportFiles: 'index.html',
+                        reportName: "Coverage Report"
+                ])
             }
         }
     }
