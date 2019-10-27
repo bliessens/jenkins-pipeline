@@ -1,4 +1,7 @@
 def call(Map attr = ['sonarqube': false]) {
+
+    properties([disableConcurrentBuilds()])
+
     def version = ""
     pipeline {
         agent {
@@ -47,12 +50,19 @@ def call(Map attr = ['sonarqube': false]) {
                     }
                 }
             }
-            stage('Build') {
+            stage('Test') {
                 steps {
-                    sh "./gradlew clean build"
+                    sh "./gradlew clean build --stacktrace --info -PversionToBuild=${version}"
                     sh "git tag ${version}"
                     sh "git push --tags"
-                    echo "Tag docker container accordingly"
+                }
+            }
+            stage('Dockerize') {
+                steps {
+                    sh "./gradlew application:buildDocker --stacktrace --info -PversionToBuild=${versionToBuild}"
+                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${versionToBuild}"
+                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
+                    sh "docker push ${dockerImage}:${versionToBuild}"
                 }
             }
             stage ('Finalize') {
