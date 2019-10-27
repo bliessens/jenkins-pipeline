@@ -1,4 +1,4 @@
-def call(boolean sonarqube = false) {
+def call(Map attr = ['sonarqube': false]) {
     def version = ""
     pipeline {
         agent {
@@ -40,7 +40,7 @@ def call(boolean sonarqube = false) {
             }
             stage('Sonar') {
                 when {
-                    expression { return sonarqube }
+                    expression { return attr['sonarqube'] }
                 }
                 steps {
                     echo "Running sonarqube analysis"
