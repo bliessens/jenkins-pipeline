@@ -4,6 +4,7 @@ def call(Map attr = ['sonarqube': false]) {
         agent {
             node {
                 label 'master'
+                reuseNode = true
             }
 
         }
