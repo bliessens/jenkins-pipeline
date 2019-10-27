@@ -15,13 +15,10 @@ def call(Map attr = ['sonarqube': false]) {
 //                    anyOf { branch 'master'; branch '*-fix'; branch '*-build' }
 //                }
                 if (env.BRANCH_NAME == 'master') {
-                    steps {
-                        script {
-                            version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim()
-                            version = (Integer.parseInt(version) + 1).toString()
-                        }
-                        echo "Master branch, next version is: ${version}"
-                    }
+                    version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim()
+                    version = (Integer.parseInt(version) + 1).toString()
+                    echo "Master branch, next version is: ${version}"
+
                 } else if (env.BRANCH_NAME ==~ /.*-build$/) {
                     final String DIGITS_ONLY = "^[a-zA-Z]*[-_](\\d*)[-._\\w]*\$"
                     def jiraTicket = env.BRANCH_NAME.replaceAll(DIGITS_ONLY, "\$1")
