@@ -8,7 +8,7 @@ def call(Map attr = ['sonarqube': false]) {
             }
         }
         triggers {
-            cron('H/5 * * * *')
+            pollSCM('H/5 * * * *')
         }
         stages {
             stage('Determine version') {
