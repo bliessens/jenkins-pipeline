@@ -1,7 +1,7 @@
 def call(Map options = ['sonarqube': false, 'label': 'master']) {
 
     properties([disableConcurrentBuilds(),
-                buildDiscarder(logRotator(numToKeepStr: '10'))])
+                buildDiscarder(logRotator(numToKeepStr: '5'))])
 
     def version = ""
     pipeline {
@@ -53,7 +53,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master']) {
             }
             stage('Test') {
                 steps {
-                    sh "./gradlew clean build --stacktrace --info -PversionToBuild=${version}"
+                    sh "./gradlew clean build --stacktrace -PversionToBuild=${version}"
                     sh "git tag ${version}"
                     sh "git push --tags"
                 }
@@ -61,7 +61,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master']) {
             stage('Dockerize') {
                 steps {
                     echo "Disabled for now"
-//                    sh "./gradlew application:buildDocker --stacktrace --info -PversionToBuild=${version}"
+//                    sh "./gradlew application:buildDocker --stacktrace -PversionToBuild=${version}"
 //                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${version}"
 //                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
 //                    sh "docker push ${dockerImage}:${version}"
@@ -74,7 +74,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master']) {
                             expression { return options['sonarqube'] }
                         }
                         steps {
-                            sh "./gradlew sonarqube"
+                            sh "./gradlew --stacktrace -PversionToBuild=${version} sonarqube"
                         }
                     }
                     stage('Publish docker container artifact') {
