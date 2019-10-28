@@ -34,7 +34,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                             if (!lastBranchTag.isEmpty()) {
                                 println "Found previous branch build with tag: '${lastBranchTag}'"
                                 def prefix = lastBranchTag.split("\\.").init().join(".")
-                                def suffix = Integer.parse(lastBranchTag.split("\\.").last()) + 1
+                                def suffix = Integer.parseInt(lastBranchTag.split("\\.").last()) + 1
                                 version = "${prefix}.${suffix}"
                             } else {
                                 def prefix = sh(script: "git describe --tags", returnStdout: true).trim()
@@ -50,7 +50,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                                 version = branchPrefix + ".1"
                             } else {
                                 def prefix = lastBranchTag.split("\\.").init().join(".")
-                                def suffix = Integer.parse(lastBranchTag.split("\\.").last()) + 1
+                                def suffix = Integer.parseInt(lastBranchTag.split("\\.").last()) + 1
                                 version = "${prefix}.${suffix}"
                             }
                             echo "Fix branch, next version is: ${version}"
