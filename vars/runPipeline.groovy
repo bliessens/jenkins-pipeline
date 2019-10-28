@@ -1,4 +1,4 @@
-def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10', 'dockerTask':'application:buildDocker']) {
+def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10']) {
 
     properties([disableConcurrentBuilds(),
                 buildDiscarder(logRotator(numToKeepStr: options['maxBuilds']))])
@@ -61,10 +61,10 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
             stage('Dockerize') {
                 steps {
                     echo "Disabled for now"
-                    sh "./gradlew ${options['dockerTask']} --stacktrace -PversionToBuild=${version}"
-                    sh "docker tag ${artifact}:${versionToBuild} ${dockerImage}:${version}"
-                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
-                    sh "docker push ${dockerImage}:${version}"
+//                    sh "./gradlew application:buildDocker --stacktrace -PversionToBuild=${version}"
+//                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${version}"
+//                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
+//                    sh "docker push ${dockerImage}:${version}"
                 }
             }
             stage('Finalize') {
