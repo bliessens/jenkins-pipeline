@@ -1,4 +1,4 @@
-def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10']) {
+def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10', 'dockerTask':'application:buildDocker']) {
 
     properties([disableConcurrentBuilds(),
                 buildDiscarder(logRotator(numToKeepStr: options['maxBuilds']))])
@@ -21,7 +21,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                 steps {
                     script {
                         if (env.BRANCH_NAME == 'master') {
-                            version = sh(script: "git tag -l '[0-9]*' | sort -rn | head -1", returnStdout: true).trim()
+                            version = sh(script: "git tag -l '[0-9]*' | grep '^[0-9]*\$' | sort -rn | head -1", returnStdout: true).trim()
                             version = (Integer.parseInt(version) + 1).toString()
                             echo "Master branch, next version is: ${version}"
 
@@ -30,10 +30,10 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                             def jiraTicket = env.BRANCH_NAME.replaceAll(DIGITS_ONLY, "\$1")
                             println "Jira issue number for branch is: '${jiraTicket}'"
 
-                            def branchTags = sh(script: "git tag -l '*.${jiraTicket}.*'", returnStdout: true).trim()
+                            def branchTags = sh(script: "git tag -l '*.${jiraTicket}.*' | sort -rn | head -1", returnStdout: true).trim()
                             def tagprefix = ""
-                            if (branchTags) {
-                                lastBranchTag = branchTags.readLines().sort().reverse()[0]
+                            if (!branchTags.isEmpty()) {
+                                lastBranchTag = branchTags
                                 println "Found previous branch build with tag: '${lastBranchTag}'"
                                 tagprefix = lastBranchTag.split("\\.").init().join(".")
                             } else {
@@ -61,10 +61,10 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
             stage('Dockerize') {
                 steps {
                     echo "Disabled for now"
-//                    sh "./gradlew application:buildDocker --stacktrace -PversionToBuild=${version}"
-//                    sh "docker tag ${group}/${artifact}:${versionToBuild} ${dockerImage}:${version}"
-//                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
-//                    sh "docker push ${dockerImage}:${version}"
+                    sh "./gradlew ${options['dockerTask']} --stacktrace -PversionToBuild=${version}"
+                    sh "docker tag ${artifact}:${versionToBuild} ${dockerImage}:${version}"
+                    sh "docker login -u ${dockerUser} -p ${dockerPWD} docker-dev.valartifactorydev01.violabor.local"
+                    sh "docker push ${dockerImage}:${version}"
                 }
             }
             stage('Finalize') {
