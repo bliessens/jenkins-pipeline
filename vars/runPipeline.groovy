@@ -30,22 +30,29 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                             def jiraTicket = env.BRANCH_NAME.replaceAll(DIGITS_ONLY, "\$1")
                             println "Jira issue number for branch is: '${jiraTicket}'"
 
-                            def branchTags = sh(script: "git tag -l '*.${jiraTicket}.*' | sort -rn | head -1", returnStdout: true).trim()
-                            def tagprefix = ""
-                            if (!branchTags.isEmpty()) {
-                                lastBranchTag = branchTags
+                            def lastBranchTag = sh(script: "git tag -l '*.${jiraTicket}.*' | sort -rn -t . -k 3 | head -1", returnStdout: true).trim()
+                            if (!lastBranchTag.isEmpty()) {
                                 println "Found previous branch build with tag: '${lastBranchTag}'"
-                                tagprefix = lastBranchTag.split("\\.").init().join(".")
+                                def prefix = lastBranchTag.split("\\.").init().join(".")
+                                def suffix = Integer.parse(lastBranchTag.split("\\.").last()) + 1
+                                version = "${prefix}.${suffix}"
                             } else {
-                                tagprefix = sh(script: "git describe --tags", returnStdout: true).trim()
-                                tagprefix = tagprefix.replaceAll("-.*", "")
-                                println "New branch. Branch builds be tagged with prefix: '${tagprefix}'"
-                                tagprefix = tagprefix + "." + jiraTicket
+                                def prefix = sh(script: "git describe --tags", returnStdout: true).trim()
+                                prefix = prefix.replaceAll("-.*", "") + "." + jiraTicket
+                                println "New branch. Branch builds will be prefixed with: '${prefix}'"
+                                version = "${tagprefix}.1"
                             }
-                            version = tagprefix + "." + env.BUILD_NUMBER
                             echo "Feature branch, next version is: ${version}"
                         } else if (env.BRANCH_NAME ==~ /.*-fix$/) {
-                            version = env.BRANCH_NAME.replaceAll("-fix", "").replaceAll("-", "") + "." + env.BUILD_NUMBER
+                            def branchPrefix = env.BRANCH_NAME.replaceAll("-fix", "").replaceAll("-", "")
+                            def lastBranchTag = sh(script: "git tag -l '${branchPrefix}.*' | sort -rn -k 2 -t . | head -1", returnStdout: true).trim()
+                            if (lastBranchTag.isEmpty()) {
+                                version = branchPrefix + ".1"
+                            } else {
+                                def prefix = lastBranchTag.split("\\.").init().join(".")
+                                def suffix = Integer.parse(lastBranchTag.split("\\.").last()) + 1
+                                version = "${prefix}.${suffix}"
+                            }
                             echo "Fix branch, next version is: ${version}"
                         }
                     }
