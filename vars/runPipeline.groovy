@@ -1,15 +1,14 @@
 def call(Map options = ['sonarqube': false, 'label': 'master']) {
 
+    properties([disableConcurrentBuilds(),
+                buildDiscarder(logRotator(numToKeepStr: '10'))])
+
     def version = ""
     pipeline {
         agent {
             node {
                 label options['label']
             }
-        }
-        options {
-            disableConcurrentBuilds()
-            buildDiscarder(logRotator(numToKeepStr: '10'))
         }
         triggers {
             pollSCM('H/5 * * * *')
