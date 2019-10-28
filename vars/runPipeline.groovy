@@ -40,7 +40,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                                 def prefix = sh(script: "git describe --tags", returnStdout: true).trim()
                                 prefix = prefix.replaceAll("-.*", "") + "." + jiraTicket
                                 println "New branch. Branch builds will be prefixed with: '${prefix}'"
-                                version = "${tagprefix}.1"
+                                version = "${prefix}.1"
                             }
                             echo "Feature branch, next version is: ${version}"
                         } else if (env.BRANCH_NAME ==~ /.*-fix$/) {
