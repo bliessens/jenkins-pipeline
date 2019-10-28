@@ -1,7 +1,7 @@
-def call(Map options = ['sonarqube': false, 'label': 'master']) {
+def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10']) {
 
     properties([disableConcurrentBuilds(),
-                buildDiscarder(logRotator(numToKeepStr: '5'))])
+                buildDiscarder(logRotator(numToKeepStr: options['maxBuilds']))])
 
     def version = ""
     pipeline {
