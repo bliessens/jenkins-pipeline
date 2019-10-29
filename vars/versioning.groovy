@@ -1,5 +1,8 @@
-
-
+/**
+ * of all numeric (Integer) tags in git repo, find the highest number
+ * and increment with 1
+ * @return highest integer tag + 1
+ */
 def masterBranch() {
     def version = sh(script: "git tag -l '[0-9]*' | grep '^[0-9]*\$' | sort -rn | head -1", returnStdout: true).trim()
     version = (Integer.parseInt(version) + 1).toString()
@@ -7,7 +10,16 @@ def masterBranch() {
     return version
 }
 
-
+/**
+ * Branches are expected to be named "{prefix}-{featureNumber}-build" <br/> whereby <br/>
+ *{prefix} is a word matching  regex "[a-zA-Z]*" <br/>
+ *{featureNumber} is an integer - e.g. jira issue number
+ * <p/>
+ * adfsg
+ * <p/>
+ * @param branchName - branch for which to generate a version number
+ * @return
+ */
 def featureBranch(branchName) {
     def version = ""
     final String DIGITS_ONLY = "^[a-zA-Z]*[-_](\\d*)[-._\\w]*\$"
@@ -42,4 +54,5 @@ def fixBranch(branchName) {
         version = "${prefix}.${suffix}"
     }
     echo "Fix branch, next version is: ${version}"
+    return version
 }
