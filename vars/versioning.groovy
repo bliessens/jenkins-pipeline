@@ -31,6 +31,7 @@ def featureBranch(branchName) {
 }
 
 def fixBranch(branchName) {
+    def version = ""
     def branchPrefix = branchName.replaceAll("-fix", "").replaceAll("-", "")
     def lastBranchTag = sh(script: "git tag -l '${branchPrefix}.*' | sort -rn -k 2 -t . | head -1", returnStdout: true).trim()
     if (lastBranchTag.isEmpty()) {

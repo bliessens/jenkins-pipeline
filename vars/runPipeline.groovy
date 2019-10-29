@@ -27,7 +27,7 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
 //                            echo "Master branch, next version is: ${version}"
 
                         } else if (env.BRANCH_NAME ==~ /.*-build$/) {
-                            verion = versioning.featureBranch(env.BRANCH_NAME)
+                            version = versioning.featureBranch(env.BRANCH_NAME)
 //                            final String DIGITS_ONLY = "^[a-zA-Z]*[-_](\\d*)[-._\\w]*\$"
 //                            def jiraTicket = env.BRANCH_NAME.replaceAll(DIGITS_ONLY, "\$1")
 //                            println "Jira issue number for branch is: '${jiraTicket}'"
