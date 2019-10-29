@@ -15,8 +15,6 @@ def masterBranch() {
  *{prefix} is a word matching  regex "[a-zA-Z]*" <br/>
  *{featureNumber} is an integer - e.g. jira issue number
  * <p/>
- * adfsg
- * <p/>
  * @param branchName - branch for which to generate a version number
  * @return
  */
@@ -42,6 +40,22 @@ def featureBranch(branchName) {
     return version
 }
 
+/**
+ * Branches are expected to be named "{prefix}-fix" <br/> whereby <br/>
+ *{prefix} is generally a real version number (most likely of a master branch build)
+ * such as "12345" but there is not strict requirement for it to be numerical<br/>
+ * Any "-" characters are stripped from the {prefix} <br/>
+ * <br/>
+ * To determine the next version we find the tag matching "{prefix}.*" with the biggest number
+ * after the ".". The next version is then "{prefix}-<highest tasg> +1"<br/>
+ *  e.g. assume branchName = "123-fix", tags 123.1 up to 123.15 exist. Then the next version = "123.16"
+ * <br/>
+ * <br/>
+ * If not tag match "{prefix}.*" are found, then nextversion is "{prefix}.1"
+ * <br/>
+ * @param branchName - branch for which to generate a version number
+ * @return
+ */
 def fixBranch(branchName) {
     def version = ""
     def branchPrefix = branchName.replaceAll("-fix", "").replaceAll("-", "")
