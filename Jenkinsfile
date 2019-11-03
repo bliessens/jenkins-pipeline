@@ -1,4 +1,9 @@
+
+properties([disableConcurrentBuilds(),
+            buildDiscarder(logRotator(numToKeepStr: options['maxBuilds']))])
+
 def version = ""
+
 pipeline {
     agent {
         node {
@@ -7,7 +12,7 @@ pipeline {
 
     }
     triggers {
-        cron('H/5 * * * *')
+        pollSCM('H/5 * * * *')
     }
     stages {
         stage('Master version') {
