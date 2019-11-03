@@ -1,6 +1,6 @@
 
 properties([disableConcurrentBuilds(),
-            buildDiscarder(logRotator(numToKeepStr: options['maxBuilds']))])
+            buildDiscarder(logRotator(numToKeepStr: '5'))])
 
 def version = ""
 
