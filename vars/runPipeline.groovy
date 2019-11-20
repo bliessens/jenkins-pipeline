@@ -21,14 +21,6 @@ def call(Map options = ['sonarqube': false, 'label': 'master', 'maxBuilds': '10'
                 steps {
 
                     script {
-                        println currentBuild.changeSets
-                        println "-------"
-//                        currentBuild.changeSets.forEach( println it.getMsg() )
-//                        println "-------"
-//                        currentBuild.changeSets.forEach { it -> println it.getMsgAnnotated() }
-//                        println "-------"
-//                        currentBuild.changeSets.forEach { it -> println it.getMsgEscaped() }
-//                        println "-------"
                         if (env.BRANCH_NAME == 'master') {
                             version = versioning.masterBranch()
 //                            version = sh(script: "git tag -l '[0-9]*' | grep '^[0-9]*\$' | sort -rn | head -1", returnStdout: true).trim()
